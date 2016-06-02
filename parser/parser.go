@@ -60,6 +60,10 @@ func ParseLine(line string, hosts []string) ParsedLine {
 	preParsed := ParseLineGeneric(line, hosts)
 	notParsable := ParsedLineGeneric{}
 	if preParsed != notParsable {
+		// Levels that are not covered:
+		// * SERVICE NOTIFICATION
+		// * EXTERNAL COMMAND
+		// * SERVICE FLAPPING ALERT
 		if preParsed.level == "SERVICE ALERT" {
 			return ParseLineServiceAlert(preParsed)
 		}
@@ -68,6 +72,9 @@ func ParseLine(line string, hosts []string) ParsedLine {
 		}
 		if preParsed.level == "CURRENT HOST STATE" {
 			return ParseLineHostAlert(preParsed)
+		}
+		if preParsed.level == "CURRENT SERVICE STATE" {
+			return ParseLineServiceAlert(preParsed)
 		}
 	}
 	return ParsedLine{}
