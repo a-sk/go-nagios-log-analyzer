@@ -60,6 +60,21 @@ func ParseLine(line string, hosts []string) ParsedLine {
 	preParsed := ParseLineGeneric(line, hosts)
 	notParsable := ParsedLineGeneric{}
 	if preParsed != notParsable {
+		// Levels that are not covered:
+		// * SERVICE NOTIFICATION
+		// 	Lines look like
+		//	[1452525906] SERVICE NOTIFICATION: slack-channel;srv-dus;Memcached server stats - Pool: name;WARNING;slack-service-notification;MEMCACHE STATS WARNING - hitrate: 30.93 fillrate: 73.24 evictionrate: 370.98 time_get:162 usec time_set:202 usec cur_conn:159;
+		//	[1452526252] SERVICE NOTIFICATION: slack-channel;srv-sfo;Mirrormaker lag;WARNING;slack-service-notification;WARNING - [foo:100592 messages lag] [bar:134790 messages lag];
+		//	[1452526618] SERVICE NOTIFICATION: daniel;srv-dus;appdata hdfs v6;ACKNOWLEDGEMENT;mail-service-notification;DISK CRITICAL - /appdata/hdfs/v6 is not accessible: Input/output error;Icinga 2 Admin;shi
+		// * EXTERNAL COMMAND
+		// 	Lines look like
+		//	[1452525976] EXTERNAL COMMAND: SCHEDULE_FORCED_SVC_CHECK;srv0;Raid Status;1452525972
+		//	[1452526618] EXTERNAL COMMAND: ACKNOWLEDGE_SVC_PROBLEM;srv0;appdata hdfs v6;2;1;0;Icinga 2 Admin;xli
+		//	[1452527100] EXTERNAL COMMAND: ENABLE_SVC_CHECK;srv0;transfer_service_Cron
+		// * SERVICE FLAPPING ALERT
+		// 	Lines look like
+		//	[1425428574] SERVICE FLAPPING ALERT: java-cache2-dus;Redis on port 6382;STARTED; Checkable appears to have started flapping (54% change >= 30% threshold)
+		//	[1425429669] SERVICE FLAPPING ALERT: imgstore0-dus;Appdata Images Filesystem;STOPPED; Checkable appears to have stopped flapping (28% change < 30% threshold)
 		if preParsed.level == "SERVICE ALERT" {
 			return ParseLineServiceAlert(preParsed)
 		}
@@ -68,6 +83,9 @@ func ParseLine(line string, hosts []string) ParsedLine {
 		}
 		if preParsed.level == "CURRENT HOST STATE" {
 			return ParseLineHostAlert(preParsed)
+		}
+		if preParsed.level == "CURRENT SERVICE STATE" {
+			return ParseLineServiceAlert(preParsed)
 		}
 	}
 	return ParsedLine{}

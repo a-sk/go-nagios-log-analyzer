@@ -97,6 +97,15 @@ func TestParseLineWithHostState(t *testing.T) {
 	expect(t, parsed, answer)
 }
 
+func TestParseLineWithCurrentServiceState(t *testing.T) {
+	hosts := []string{"-sfo"}
+	sample := "[1450882800] CURRENT SERVICE STATE: zookeeper0-sfo;Zookeeper Health;OK;HARD;1;OK: ZooKeeper Mode follower, avg latency 1, outstanding requests 0, version 3.4.6-1569965, built on 02/20/2014 09:09 GMT"
+	answer := ParsedLine{1450882800, "CURRENT SERVICE STATE", "zookeeper0-sfo", "Zookeeper Health", "OK", "HARD", 1, "OK: ZooKeeper Mode follower, avg latency 1, outstanding requests 0, version 3.4.6-1569965, built on 02/20/2014 09:09 GMT"}
+	parsed := ParseLine(sample, hosts)
+
+	expect(t, parsed, answer)
+}
+
 func TestParseLineWrongService(t *testing.T) {
 	hosts := []string{".test.ru", ".test.com"}
 	sample := "[1405209605] ALERT: host3.test.ru;SSH;CRITICAL;HARD;3;Server answer:"
