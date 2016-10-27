@@ -6,11 +6,11 @@ import (
 )
 
 type Interval struct {
-	Start int
-	End   int
+	Start int64
+	End   int64
 }
 
-func (i Interval) Len() int {
+func (i Interval) Len() int64 {
 	return i.End - i.Start
 }
 func (a Interval) Include(b Interval) bool {
@@ -21,8 +21,8 @@ func (i Interval) Union(other Interval) Interval {
 	if !i.Overlaps(other) {
 		return Interval{}
 	}
-	newStart := int(math.Min(float64(i.Start), float64(other.Start)))
-	newEnd := int(math.Max(float64(i.End), float64(other.End)))
+	newStart := int64(math.Min(float64(i.Start), float64(other.Start)))
+	newEnd := int64(math.Max(float64(i.End), float64(other.End)))
 	return Interval{newStart, newEnd}
 }
 func (i Interval) Overlaps(other Interval) bool {
@@ -53,11 +53,11 @@ func (is *IntervalSet) Add(other Interval) {
 	}
 }
 
-func (is IntervalSet) Len() int {
+func (is IntervalSet) Len() int64 {
 	if len(is.Intervals) == 0 {
 		return -1
 	}
-	intervalLen := 0
+	intervalLen := int64(0)
 	for _, interval := range is.Intervals {
 		intervalLen += interval.Len()
 	}

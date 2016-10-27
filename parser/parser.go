@@ -9,14 +9,14 @@ import (
 )
 
 type ParsedLineGeneric struct {
-	timestamp int
+	timestamp int64
 	level     string
 	data      string
 }
 
 // +gen
 type ParsedLine struct {
-	Timestamp int
+	Timestamp int64
 	Level     string
 	Hostname  string
 	Service   string
@@ -45,7 +45,7 @@ func shoudParse(line string, mustInclude []string) bool {
 func ParseLineGeneric(line string, hosts []string) ParsedLineGeneric {
 	if shoudParse(line, hosts) {
 		splited := strings.SplitN(line, ":", 2)
-		timestamp, err := strconv.Atoi(strings.Trim(strings.Split(splited[0], "]")[0], "["))
+		timestamp, err := strconv.ParseInt(strings.Trim(strings.Split(splited[0], "]")[0], "["), 10, 64)
 		if err != nil {
 			return ParsedLineGeneric{}
 		}

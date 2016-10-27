@@ -10,8 +10,8 @@ import (
 
 type DownTime struct {
 	Hostname          string
-	CriticalTimestamp int
-	FirstOkTimestamp  int
+	CriticalTimestamp int64
+	FirstOkTimestamp  int64
 }
 
 type Uptime map[string]int
